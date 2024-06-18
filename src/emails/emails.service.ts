@@ -4,6 +4,7 @@ import { UpdateEmailDto } from './dto/update-email.dto';
 import { Email } from './entities/email.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { SendEmailDto } from './dto/send-email.dto';
 
 @Injectable()
 export class EmailsService {
@@ -42,5 +43,10 @@ export class EmailsService {
 
   remove(id: number) {
     return `This action removes a #${id} email`;
+  }
+
+  // ====== CMS ======
+  async sendSpam(body: SendEmailDto) {
+    return body
   }
 }

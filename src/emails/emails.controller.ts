@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { EmailsService } from './emails.service';
 import { CreateEmailDto } from './dto/create-email.dto';
 import { UpdateEmailDto } from './dto/update-email.dto';
+import { SendEmailDto } from './dto/send-email.dto';
 
 @Controller('emails')
 export class EmailsController {
@@ -47,4 +48,15 @@ export class EmailsController {
       return error.message;
     }
   }
+
+  // ====== CMS ======
+  @Post('/send-spam')
+  sendMamy(@Body() body: SendEmailDto) {
+    try {
+      return this.emailsService.sendSpam(body);
+    } catch (error) {
+      return error.message;
+    }
+  }
+
 }
