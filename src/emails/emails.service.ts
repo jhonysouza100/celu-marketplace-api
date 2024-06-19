@@ -5,6 +5,8 @@ import { Email } from './entities/email.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SendEmailDto } from './dto/send-email.dto';
+import config from '../config'
+import * as brevo from "@getbrevo/brevo";
 
 @Injectable()
 export class EmailsService {
@@ -46,7 +48,25 @@ export class EmailsService {
   }
 
   // ====== CMS ======
-  async sendSpam(body: SendEmailDto) {
-    return body
+  async sendSpam({ subject, to, htmlContent, sender }: SendEmailDto) {
+    
+    const apiInstance = new brevo.TransactionalEmailsApi();
+
+    apiInstance.setApiKey(
+      brevo.TransactionalEmailsApiApiKeys.apiKey,
+      config.BREVO_API_KEY as string
+    );
+
+    try {
+      const smtpEmail = new brevo.SendSmtpEmail();
+      smtpEmail.subject = subject;
+      smtpEmail.to = to;
+      smtpEmail.htmlContent = `<html><body>${htmlContent}</body></html>`;
+      smtpEmail.sender = sender;
+  
+      await apiInstance.sendTransacEmail(smtpEmail);
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
