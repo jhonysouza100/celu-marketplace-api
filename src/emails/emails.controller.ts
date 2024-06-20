@@ -23,6 +23,7 @@ export class EmailsController {
     }
   }
   
+  // ====== CMS USER ======
   @Get()
   @ApiOkResponse({description: 'OK'})
   findAll() {
@@ -67,7 +68,6 @@ export class EmailsController {
     }
   }
   
-  // ====== CMS ======
   @Post('/send-spam')
   @ApiOkResponse({description: 'OK'})
   @ApiBadRequestResponse({description: 'REQUEST_ERROR'})

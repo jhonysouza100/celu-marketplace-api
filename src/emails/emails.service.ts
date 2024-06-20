@@ -47,7 +47,6 @@ export class EmailsService {
     return `This action removes a #${id} email`;
   }
 
-  // ====== CMS ======
   async sendSpam({ subject, to, htmlContent, sender }: SendEmailDto) {
     
     const apiInstance = new brevo.TransactionalEmailsApi();

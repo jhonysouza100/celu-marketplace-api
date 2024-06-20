@@ -11,10 +11,20 @@ export class SendEmailDto {
   
   @ApiProperty({
     description: 'Lista de destinatarios con sus correos electrónicos y nombres',
-    type: [{ 
-      email: { type: 'string', example: 'destinatario@correo.com' },
-      name: { type: 'string', example: 'Nombre del Destinatario' }
-    }]
+    type: 'array',
+    items: {
+      type: 'object',
+      properties: {
+        email: {
+          type: 'string',
+          example: 'destinatario@correo.com'
+        },
+        name: {
+          type: 'string',
+          example: 'Nombre del Destinatario'
+        }
+      }
+    }
   })
   to: { email: string; name: string }[];
   
