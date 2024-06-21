@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 import { ApiBody, ApiParam, ApiTags, ApiResponse, ApiOkResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiConflictResponse, ApiBadRequestResponse} from '@nestjs/swagger';
+import { CreatePostDto } from './dto/create.post.dto';
 
 
 @Controller('users')
@@ -23,8 +24,25 @@ export class UsersController {
     } catch (error) {
       return error.message;
     }
-
+    
   }
+  
+  // POSTS ↓↓↓
+  @Post('/posts')
+  createPost(@Body() createPostDto: CreatePostDto) {
+    try {
+      return this.usersService.createPost(createPostDto);
+    } catch (error) {
+      return error.message;
+    }
+  }
+
+  @Get('/posts')
+  @ApiOkResponse({description: 'OK'})
+  findAllPosts() {
+    return this.usersService.findAllPosts();
+  }
+  // POSTS ↑↑↑
 
   // ====== CMS USER ======
   @Get()

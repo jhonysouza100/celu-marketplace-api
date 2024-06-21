@@ -1,4 +1,5 @@
 import { BeforeUpdate, Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Post } from "./post.entity";
 // import { Post } from "./Post";
 // import { Cart } from "./Cart";
 
@@ -8,23 +9,26 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   username: string;
 
   @Column({ unique: true})
   email: string;
 
   @Column({ nullable: true })
+  picture: string | null;
+
+  @Column({ nullable: true })
   password: string | null;
 
-  @Column( {unique: true, nullable: true})
+  @Column( { nullable: true })
   tel: string | null;
 
   @Column({ nullable: true })
   pais: string | null;
 
-  // @OneToMany(() => Post, post => post.user)
-  // posts: Post[];
+  @OneToMany(() => Post, post => post.user, { cascade: true, nullable: true }) // Define la relación OneToMany
+  posts: Post[] | null;
 
   // @OneToOne(() => Cart, cart => cart.user)
   // cart: Cart;

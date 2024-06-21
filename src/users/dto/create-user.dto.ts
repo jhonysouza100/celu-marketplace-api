@@ -14,6 +14,13 @@ export class CreateUserDto {
     example: 'johndoe@example.com'
   })
   email: string;
+ 
+  @ApiProperty({ 
+    description: 'Enlace a la foto de perfil',
+    type: String,
+    example: 'https://jondoe.jpg'
+  })
+  picture?: string;
   
   @ApiProperty({ 
     description: 'Contraseña (opcional)',
