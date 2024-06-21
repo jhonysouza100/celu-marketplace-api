@@ -4,14 +4,6 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreatePostDto {
 
   @ApiProperty({ 
-    description: 'ID del usuario que crea el post',
-    type: Number,
-    example: 1
-  })
-  @IsNotEmpty()
-  userId: number; // Id del usuario que crea el post
-  
-  @ApiProperty({ 
     description: 'Contenido del post (requerido, longitud entre 1 y 255 caracteres)',
     type: String,
     example: 'Este es el contenido de mi post'
@@ -31,4 +23,11 @@ export class CreatePostDto {
   @Max(5)
   rating?: number;
   
+  @ApiProperty({ 
+    description: 'ID del usuario que crea el post',
+    type: Number,
+    example: 1
+  })
+  @IsNotEmpty()
+  userId: number; // Id del usuario que crea el post
 }

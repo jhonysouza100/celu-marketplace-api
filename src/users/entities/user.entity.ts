@@ -27,9 +27,6 @@ export class User {
   @Column({ nullable: true })
   pais: string | null;
 
-  @OneToMany(() => Post, post => post.user, { cascade: true, nullable: true }) // Define la relación OneToMany
-  posts: Post[] | null;
-
   // @OneToOne(() => Cart, cart => cart.user)
   // cart: Cart;
 
@@ -43,5 +40,8 @@ export class User {
   updateModifiedAt() {
     this.modifiedAt = new Date();
   }
+
+  @OneToMany(() => Post, post => post.userId, { cascade: true, nullable: true }) // Define la relación OneToMany
+  posts: Post[] | null;
 
 }

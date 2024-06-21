@@ -18,18 +18,27 @@ export class UsersService {
   async create(user: CreateUserDto) {
 
     const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
-
+    
     if(userFound) throw new HttpException('USER_ALREADY_EXIST', HttpStatus.CONFLICT)
-
+    
     const newUser = this.usersRepository.create(user)
-
+    
     return await this.usersRepository.save(newUser)
   }
   
   // POST ↓↓↓
   async createPost(post: CreatePostDto) {
     
-    const newPost = this.postsRepository.create(post)
+    const userFound = await this.usersRepository.findOne({ where: { id: post.userId } });
+
+    if(!userFound) return new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND)
+
+    const newPost = new Post();
+    newPost.content = post.content;
+    newPost.rating = post.rating;
+    newPost.userId = userFound;
+    
+    // const newPost = this.postsRepository.create(post)
   
     return await this.postsRepository.save(newPost)
 
