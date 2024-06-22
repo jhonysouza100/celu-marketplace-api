@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsOptional, IsInt, Min, Max, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsInt, IsNotEmpty, IsOptional, IsString, Length, Max, Min } from 'class-validator';
 
 export class CreatePostDto {
 
@@ -8,19 +8,20 @@ export class CreatePostDto {
     type: String,
     example: 'Este es el contenido de mi post'
   })
+  @IsString()
   @IsNotEmpty()
-  @Length(1, 255)
+  @Length(1, 600)
   content: string;
   
   @ApiProperty({ 
-    description: 'Calificación del post (opcional, debe ser un número entero entre 1 y 5)',
+    description: 'Calificación del post (opcional, debe ser un número entero entre 1 y 5, por defecto es 5)',
     type: Number,
     example: 4
   })
-  @IsOptional()
   @IsInt()
   @Min(1)
   @Max(5)
+  @IsOptional()
   rating?: number;
   
   @ApiProperty({ 
@@ -28,6 +29,7 @@ export class CreatePostDto {
     type: Number,
     example: 1
   })
+  @IsInt()
   @IsNotEmpty()
-  userId: number; // Id del usuario que crea el post
+  userId: number;
 }

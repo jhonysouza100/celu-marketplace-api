@@ -269,3 +269,49 @@ export async function sendEmail({ subject, to, htmlContent }: Params) {
   }
 }
 ```
+
+# Validators
+
+> Install
+
+```javascript
+npm install class-validator class-transformer
+```
+
+Use: 
+
+`/user.controller.ts`
+
+```javascript
+import { UsePipes, ValidationPipe } from '@nestjs/common';
+
+@Post()
+@UsePipes(new ValidationPipe())
+create(@Body() user: CreateUserDto) {
+  return user;
+}
+```
+
+`/create-user.dto.ts`
+
+```javascript
+import { IsString, IsEmail, IsNotEmpty } from 'class-validator';
+
+export class CreateUserDto {
+
+  @IsString()
+  @IsNotEmpty()
+  username: string;
+  
+  @IsEmail()
+  @IsString()
+  @IsNotEmpty()
+  email: string;
+  
+  @IsString()
+  password?: string;
+  
+}
+
+```
+

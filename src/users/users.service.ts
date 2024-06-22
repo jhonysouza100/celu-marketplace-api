@@ -2,18 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CreatePostDto } from './dto/create.post.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { Post } from './entities/post.entity';
 
 @Injectable()
 export class UsersService {
 
-  constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>,
-    @InjectRepository(Post) private postsRepository: Repository<Post>
-  ) {}
+  constructor( @InjectRepository(User) private usersRepository: Repository<User> ) {}
 
   async create(user: CreateUserDto) {
 
@@ -26,29 +21,6 @@ export class UsersService {
     return await this.usersRepository.save(newUser)
   }
   
-  // POST ↓↓↓
-  async createPost(post: CreatePostDto) {
-    
-    const userFound = await this.usersRepository.findOne({ where: { id: post.userId } });
-
-    if(!userFound) return new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND)
-
-    const newPost = new Post();
-    newPost.content = post.content;
-    newPost.rating = post.rating;
-    newPost.userId = userFound;
-    
-    // const newPost = this.postsRepository.create(post)
-  
-    return await this.postsRepository.save(newPost)
-
-  }
-
-  async findAllPosts() {
-    return await this.postsRepository.find()
-  }
-  // POST ↑↑↑
-
   async findAll() {
     return await this.usersRepository.find()
   }

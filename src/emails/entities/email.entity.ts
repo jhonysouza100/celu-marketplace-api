@@ -6,7 +6,7 @@ export class Email {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })

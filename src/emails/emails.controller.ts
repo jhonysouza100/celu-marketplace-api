@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
 import { EmailsService } from './emails.service';
 import { CreateEmailDto } from './dto/create-email.dto';
 import { UpdateEmailDto } from './dto/update-email.dto';
 import { SendEmailDto } from './dto/send-email.dto';
-import { ApiBody, ApiParam, ApiTags, ApiResponse, ApiOkResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiConflictResponse, ApiBadRequestResponse} from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiTags, ApiOkResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiConflictResponse, ApiBadRequestResponse} from '@nestjs/swagger';
 
 @Controller('emails')
 @ApiTags('emails')
@@ -11,6 +11,7 @@ export class EmailsController {
   constructor(private readonly emailsService: EmailsService) {}
   
   @Post()
+  @UsePipes(new ValidationPipe())
   @ApiCreatedResponse({ description: 'EMAIL_SUCCESSFULLY_CREATED'})
   @ApiBadRequestResponse({description: 'EMAIL_IS_REQUIRED'})
   @ApiConflictResponse({ description: 'EMAIL_ALREADY_EXIST'})
@@ -69,6 +70,7 @@ export class EmailsController {
   }
   
   @Post('/send-spam')
+  @UsePipes(new ValidationPipe())
   @ApiOkResponse({description: 'OK'})
   @ApiBadRequestResponse({description: 'REQUEST_ERROR'})
   @ApiBody({ type: [SendEmailDto], description: 'Envia emails en serie, recibe un arreglo de emails' })

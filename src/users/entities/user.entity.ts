@@ -1,7 +1,5 @@
-import { BeforeUpdate, Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Post } from "./post.entity";
-// import { Post } from "./Post";
-// import { Cart } from "./Cart";
+import { BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Post } from 'src/posts/entities/post.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -12,7 +10,7 @@ export class User {
   @Column()
   username: string;
 
-  @Column({ unique: true})
+  @Column({ unique: true })
   email: string;
 
   @Column({ nullable: true })
@@ -20,15 +18,6 @@ export class User {
 
   @Column({ nullable: true })
   password: string | null;
-
-  @Column( { nullable: true })
-  tel: string | null;
-
-  @Column({ nullable: true })
-  pais: string | null;
-
-  // @OneToOne(() => Cart, cart => cart.user)
-  // cart: Cart;
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
@@ -41,7 +30,7 @@ export class User {
     this.modifiedAt = new Date();
   }
 
-  @OneToMany(() => Post, post => post.userId, { cascade: true, nullable: true }) // Define la relación OneToMany
+  @OneToMany(() => Post, post => post.userId, { cascade: true, nullable: true })
   posts: Post[] | null;
 
 }
