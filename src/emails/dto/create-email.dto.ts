@@ -10,6 +10,6 @@ export class CreateEmailDto {
   @IsEmail()
   @IsString()
   @IsNotEmpty()
-  @Length(1, 50)
+  @Length(1, 320)
   email: string;
 }

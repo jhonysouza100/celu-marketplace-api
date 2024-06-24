@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -10,7 +10,6 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Post()
-  @UsePipes(new ValidationPipe())
   @ApiCreatedResponse({ description: 'POST_SUCCESSFULLY_CREATED'})
   @ApiBadRequestResponse({description: 'A_PARAMETER_IS_MISSING'})
   @ApiBody({ type: [CreatePostDto], description: 'Recibe un objeto post' })

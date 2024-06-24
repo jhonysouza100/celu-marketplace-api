@@ -14,10 +14,10 @@ export class User {
   email: string;
 
   @Column({ nullable: true })
-  picture: string | null;
+  picture: string;
 
   @Column({ nullable: true })
-  password: string | null;
+  password: string;
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
@@ -31,6 +31,6 @@ export class User {
   }
 
   @OneToMany(() => Post, post => post.userId, { cascade: true, nullable: true })
-  posts: Post[] | null;
+  posts: Post[];
 
 }
