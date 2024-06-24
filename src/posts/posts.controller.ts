@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } fro
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { ApiBadRequestResponse, ApiParam, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiParam, ApiBody, ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('posts')
 @ApiTags('Posts')
+@ApiBearerAuth()
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
