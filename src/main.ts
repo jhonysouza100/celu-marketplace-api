@@ -12,6 +12,7 @@ async function bootstrap() {
   .setTitle("celu-marketplace-api")
   .setDescription("")
   .setVersion("1.0")
+  .addBearerAuth()
   .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("docs", app, document);
