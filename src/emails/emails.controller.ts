@@ -3,10 +3,11 @@ import { EmailsService } from './emails.service';
 import { CreateEmailDto } from './dto/create-email.dto';
 import { UpdateEmailDto } from './dto/update-email.dto';
 import { SendEmailDto } from './dto/send-email.dto';
-import { ApiBody, ApiParam, ApiTags, ApiOkResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiConflictResponse, ApiBadRequestResponse} from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiTags, ApiBearerAuth, ApiOkResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiConflictResponse, ApiBadRequestResponse} from '@nestjs/swagger';
 
 @Controller('emails')
 @ApiTags('emails')
+@ApiBearerAuth()
 export class EmailsController {
   constructor(private readonly emailsService: EmailsService) {}
   
