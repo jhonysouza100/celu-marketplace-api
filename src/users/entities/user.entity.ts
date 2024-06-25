@@ -1,7 +1,6 @@
-import { BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Post } from 'src/posts/entities/post.entity';
+import { BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: 'users' })
+@Entity('users')
 export class User {
 
   @PrimaryGeneratedColumn()
@@ -9,16 +8,16 @@ export class User {
 
   @Column()
   username: string;
-
-  @Column({ unique: true })
+  
+  @Column({unique: true})
   email: string;
-
-  @Column({ nullable: true })
-  picture: string;
-
-  @Column({ nullable: true })
+  
+  @Column({nullable: true})
   password: string;
 
+  @Column({nullable: true})
+  picture: string;
+  
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
@@ -29,8 +28,4 @@ export class User {
   updateModifiedAt() {
     this.modifiedAt = new Date();
   }
-
-  @OneToMany(() => Post, post => post.userId, { cascade: true, nullable: true })
-  posts: Post[];
-
 }

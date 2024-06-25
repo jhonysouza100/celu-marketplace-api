@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateEmailDto } from './dto/create-email.dto';
-import { UpdateEmailDto } from './dto/update-email.dto';
 import { Email } from './entities/email.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -39,12 +38,25 @@ export class EmailsService {
     return emailFound
   }
 
-  update(id: number, updateEmailDto: UpdateEmailDto) {
-    return `This action updates a #${id} email`;
+  async remove(id: number) {
+    
+    const emailFound = this.emailsRepository.findOne({ where: {id} });
+    
+    if(!emailFound) throw new HttpException('EMAIL_NOT_FOUND', HttpStatus.NOT_FOUND)
+
+    this.emailsRepository.delete({ id });
+
+    return emailFound;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} email`;
+  async update(id: number, email: CreateEmailDto) {
+    
+    const emailFound = this.emailsRepository.findOne({ where: {id} });
+    
+    if(!emailFound) throw new HttpException('EMAIL_NOT_FOUND', HttpStatus.NOT_FOUND);
+
+    return this.emailsRepository.update({id}, email)
+      
   }
 
   async sendEmail({ subject, to, htmlContent, sender }: SendEmailDto) {

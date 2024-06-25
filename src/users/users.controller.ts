@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBody, ApiParam, ApiTags, ApiBearerAuth, ApiResponse, ApiOkResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiConflictResponse, ApiBadRequestResponse} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
 @ApiTags('Users')
@@ -11,9 +11,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @ApiCreatedResponse({ description: 'USER_SUCCESSFULLY_CREATED'})
-  @ApiBadRequestResponse({description: 'A_PARAMETER_IS_MISSING'})
-  @ApiConflictResponse({ description: 'USER_ALREADY_EXIST'})
   @ApiBody({ type: [CreateUserDto], description: 'Recibe un objeto usuario' })
   create(@Body() user: CreateUserDto) {
     try {
@@ -24,23 +21,39 @@ export class UsersController {
   }
 
   @Get()
-  @ApiOkResponse({description: 'OK'})
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Get('/:id')
+  @ApiParam({name: 'id', description: 'User id'})
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return this.usersService.findOne(id);
+    } catch (error) {
+      return error.message;
+    }
+  }
+
+  @Delete('/:id')
+  @ApiParam({ name: 'id', description: 'User id' })
+  remove(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return this.usersService.remove(id);
+    } catch (error) {
+      return error.message;
+    }
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @ApiParam({name: 'id', description: 'User id'})
+  @ApiBody({ type: [UpdateUserDto], description: 'Recibe un nuevo user en el cuerpo de la peticion' })
+  update(@Param('id', ParseIntPipe) id: number, @Body() user: UpdateUserDto ) {
+    try {
+      return this.usersService.update(id, user);
+    } catch (error) {
+      return error.message;
+    }
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
-  }
 }

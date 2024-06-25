@@ -1,20 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { EmailsService } from './emails.service';
 import { CreateEmailDto } from './dto/create-email.dto';
-import { UpdateEmailDto } from './dto/update-email.dto';
 import { SendEmailDto } from './dto/send-email.dto';
-import { ApiBody, ApiParam, ApiTags, ApiBearerAuth, ApiOkResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiConflictResponse, ApiBadRequestResponse} from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiTags, ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('emails')
-@ApiTags('emails')
+@ApiTags('Emails')
 @ApiBearerAuth()
 export class EmailsController {
   constructor(private readonly emailsService: EmailsService) {}
   
   @Post()
-  @ApiCreatedResponse({ description: 'EMAIL_SUCCESSFULLY_CREATED'})
-  @ApiBadRequestResponse({description: 'EMAIL_IS_REQUIRED'})
-  @ApiConflictResponse({ description: 'EMAIL_ALREADY_EXIST'})
   @ApiBody({ type: [CreateEmailDto], description: 'Recibe una direccion de email' })
   create(@Body() email: CreateEmailDto) {
     try {
@@ -31,47 +27,38 @@ export class EmailsController {
     return this.emailsService.findAll();
   }
   
-  @Get(':id')
-  @ApiOkResponse({description: 'OK'})
-  @ApiNotFoundResponse({description: 'EMAIL_NOT_FOUND'})
+  @Get('/:id')
   @ApiParam({name: 'id', description: 'Email id'})
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     try {
-      return this.emailsService.findOne(+id);
+      return this.emailsService.findOne(id);
+    } catch (error) {
+      return error.message;
+    }
+  }
+    
+  @Delete('/:id')
+  @ApiParam({ name: 'id', description: 'Email id' })
+  remove(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return this.emailsService.remove(id);
     } catch (error) {
       return error.message;
     }
   }
   
   @Patch(':id')
-  @ApiCreatedResponse({description: 'EMAIL_SUCCESSFULLY_UPDATED'})
-  @ApiNotFoundResponse({description: 'EMAIL_NOT_FOUND'})
-  @ApiBadRequestResponse({description: 'EMAIL_IS_REQUIRED'})
   @ApiParam({name: 'id', description: 'Email id'})
-  @ApiBody({ type: [UpdateEmailDto], description: 'Recibe un nuevo email en el cuerpo de la peticion' })
-  update(@Param('id') id: string, @Body() updateEmailDto: UpdateEmailDto) {
+  @ApiBody({ type: [CreateEmailDto], description: 'Recibe un nuevo email en el cuerpo de la peticion' })
+  update(@Param('id', ParseIntPipe) id: number, @Body() email: CreateEmailDto ) {
     try {
-      return this.emailsService.update(+id, updateEmailDto);
-    } catch (error) {
-      return error.message;
-    }
-  }
-  
-  @Delete(':id')
-  @ApiCreatedResponse({description: 'EMAIL_SUCCESSFULLY_DELETED'})
-  @ApiNotFoundResponse({description: 'EMAIL_NOT_FOUND'})
-  @ApiParam({ name: 'id', description: 'Email id' })
-  remove(@Param('id') id: string) {
-    try {
-      return this.emailsService.remove(+id);
+      return this.emailsService.update(id, email);
     } catch (error) {
       return error.message;
     }
   }
   
   @Post('/send-email')
-  @ApiOkResponse({description: 'OK'})
-  @ApiBadRequestResponse({description: 'REQUEST_ERROR'})
   @ApiBody({ type: [SendEmailDto], description: 'Envia emails en serie, recibe un arreglo de emails' })
   sendEmail(@Body() body: SendEmailDto) {
     try {
