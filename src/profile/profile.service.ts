@@ -23,9 +23,9 @@ export class ProfileService {
 
     userFound.profile = savedProfile;
     
-    // return this.usersSevice.update(id, userFound);
+    return this.usersSevice.update(id, userFound);
 
-    return this.usersSevice.createProfile(userFound);
+    // return this.usersSevice.createProfile(userFound);
   }
 
   findAll() {
