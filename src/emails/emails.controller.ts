@@ -58,7 +58,7 @@ export class EmailsController {
     }
   }
   
-  @Post('/send-email')
+  @Post('/send')
   @ApiBody({ type: [SendEmailDto], description: 'Envia emails en serie, recibe un arreglo de emails' })
   sendEmail(@Body() body: SendEmailDto) {
     try {

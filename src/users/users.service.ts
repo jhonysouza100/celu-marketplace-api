@@ -54,4 +54,10 @@ export class UsersService {
 
     return this.usersRepository.update( {id}, user );
   }
+
+  async createProfile(user: CreateUserDto) {
+
+    return await this.usersRepository.save(user)
+
+  }
 }
