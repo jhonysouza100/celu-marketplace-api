@@ -14,44 +14,47 @@ export class UsersService {
     
     const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
 
-    if(userFound) throw new HttpException('USER_ALREADY_EXIST', HttpStatus.CONFLICT)
+    if(userFound) throw new HttpException('User already exist', HttpStatus.CONFLICT);
 
-    const newUser = this.usersRepository.create(user)
+    const newUser = this.usersRepository.create(user);
 
-    return await this.usersRepository.save(newUser)
+    return await this.usersRepository.save(newUser);
 
   }
 
   async findAll() {
+
     return await this.usersRepository.find();
+
   }
 
   async findOne(id: number) {
 
-    const userFound = await this.usersRepository.findOne({ where: {id}})
+    const userFound = await this.usersRepository.findOne({ where: {id}});
 
-    if(!userFound) throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND)
+    if(!userFound) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     
-    return userFound
-  }
-
-  remove(id: number) {
-
-    const userFound = this.usersRepository.findOne({ where: {id} });
-    
-    if(!userFound) throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND)
-
-    this.usersRepository.delete({ id });
-
     return userFound;
+
   }
 
-  update(id: number, user: UpdateUserDto) {
+  async remove(id: number) {
+
+    await this.findOne(id)
+
+    await this.usersRepository.delete({ id });
+
+    throw new HttpException(`User #${id} deleted successfully`, HttpStatus.OK);
+
+  }
+  
+  async update(id: number, user: UpdateUserDto) {
     
-    const userFound = this.usersRepository.findOne({where: {id: id}});
+    await this.findOne(id)
 
-    if(!userFound) throw new HttpException('USER NOT FOUND', HttpStatus.NOT_FOUND);
+    await this.usersRepository.update( {id}, user );
+    
+    throw new HttpException(`User #${id} updated successfully`, HttpStatus.OK);
 
-    return this.usersRepository.update( {id}, user );
   }
 }

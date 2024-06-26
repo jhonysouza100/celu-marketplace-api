@@ -2,9 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from 
 import { ProfileService } from './profile.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { ApiBody, ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 
 @Controller('profile')
+@ApiTags('Profile')
+@ApiBearerAuth()
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
@@ -25,17 +27,33 @@ export class ProfileController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.profileService.findOne(+id);
+  @ApiParam({name: 'id', description: 'Profile Id'})
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return this.profileService.findOne(+id)
+    } catch (error) {
+      return error.message;
+    };
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.profileService.update(+id, updateProfileDto);
-  }
-
+  
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.profileService.remove(+id);
+  @ApiParam({name: 'id', description: 'Profile Id'})
+  remove(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return this.profileService.remove(+id);
+    } catch (error) {
+      return error.message;
+    }
+  }
+  
+  @Patch(':id')
+  @ApiParam({name: 'id', description: 'Profile Id'})
+  @ApiBody({type: [UpdateProfileDto], description: 'Recibe un objeto con el (nuevo) perfil del usuario'})
+  update(@Param('id', ParseIntPipe) id: number, @Body() profile: UpdateProfileDto) {
+    try {
+      return this.profileService.update(+id, profile);
+    } catch (error) {
+      return error.message;
+    }
   }
 }

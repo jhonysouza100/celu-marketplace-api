@@ -22,4 +22,5 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @Length(1, 320)
   email?: string;
+  
 }

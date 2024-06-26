@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,22 +25,42 @@ export class ProfileService {
     
     return this.usersSevice.update(id, userFound);
 
-    // return this.usersSevice.createProfile(userFound);
   }
 
-  findAll() {
-    return `This action returns all profile`;
+  async findAll() {
+
+    return await this.profileRepositoy.find();
+
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} profile`;
+  async findOne(id: number) {
+    
+    const profileFound = await this.profileRepositoy.findOne({ where: { id: id } });
+
+    if(!profileFound) throw new HttpException("No profile found", HttpStatus.NOT_FOUND);
+    
+    return profileFound;
+
+  }
+  
+  async remove(id: number) {
+    
+    await this.findOne(id)
+    
+    await this.profileRepositoy.delete({id});
+    
+    throw new HttpException(`Profile #${id} deleted successfully`, HttpStatus.OK)
+    
+  }
+  
+  async update(id: number, profile: UpdateProfileDto) {
+    
+    await this.findOne(id)
+
+    await this.profileRepositoy.update({id}, profile)
+
+    throw new HttpException(`Profile #${id} updated successfully`, HttpStatus.OK);
+
   }
 
-  update(id: number, profile: UpdateProfileDto) {
-    return `This action updates a #${id} profile`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} profile`;
-  }
 }
