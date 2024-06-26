@@ -56,4 +56,14 @@ export class UsersController {
     }
   }
 
+  @Post('/suscribe')
+  @ApiBody({ type: [CreateUserDto], description: 'Recibe un objeto usuario' })
+  suscribe(@Body() user: CreateUserDto) {
+    try {
+      return this.usersService.suscribe(user);
+    } catch (error) {
+      return error.message;
+    }
+  }
+
 }
