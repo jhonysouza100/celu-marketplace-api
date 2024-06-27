@@ -4,20 +4,26 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { EmailsService } from 'src/emails/emails.service';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
 
   constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>,
-    private emailService: EmailsService) {} 
+    @InjectRepository(User) private usersRepository: Repository<User>) {} 
 
   async create(user: CreateUserDto) {
     
     const userFound = await this.usersRepository.findOne({ where: { email: user.email } });
 
     if(userFound) throw new HttpException('User already exist', HttpStatus.CONFLICT);
+    
+    // bcrypt
+    const { password } = user;
+    if(password) {
+      const plainToHash = await hash(password, 10);
+      user = {...user, password: plainToHash}
+    }
 
     const newUser = this.usersRepository.create(user);
 
@@ -55,25 +61,39 @@ export class UsersService {
     
     await this.findOne(id)
 
+    // bcrypt
+    const { password } = user;
+    if(password) {
+      const plainToHash = await hash(password, 10);
+      user = {...user, password: plainToHash}
+    }
+
     await this.usersRepository.update( {id}, user );
     
     throw new HttpException(`User #${id} updated successfully`, HttpStatus.OK);
 
   }
 
-  async suscribe(user: CreateUserDto) {
-
+  async findUnique(user: UpdateUserDto) {
+    
     const emailFound = await this.usersRepository.findOne({ where: { email: user.email } });
-
+  
     const usernameFound = await this.usersRepository.findOne({ where: { username: user.username } });
-
+  
     if(emailFound) throw new HttpException('Email already exist', HttpStatus.CONFLICT);
-
+  
     else if(usernameFound) throw new HttpException('Username already exist', HttpStatus.CONFLICT);
+    
+  }
 
-    // const token = await JwtAuth.suscribe(user)
+  async findUserByEmail(email: string) {
 
-    // await this.emailService.sendEmail({})
+    const userFound = await this.usersRepository.findOne({ where: { email: email } });
+    
+    if(!userFound) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+
+    return userFound;
 
   }
+
 }
