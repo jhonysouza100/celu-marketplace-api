@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -20,6 +21,10 @@ import config from './config';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    ThrottlerModule.forRoot([{
+      ttl: 1000,
+      limit: 3,
+    }]),
     EmailsModule,
     UsersModule,
     ProfileModule,

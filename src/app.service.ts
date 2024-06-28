@@ -2,9 +2,13 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+
+  getHello(clientIp: string) {
+
+    return {message: `Hello World! Your IP is: ${clientIp}`, ip: clientIp}
+
   }
+
 }
 
 
