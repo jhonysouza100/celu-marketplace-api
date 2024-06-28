@@ -1,32 +1,64 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class PostsService {
 
-  constructor(@InjectRepository(Post) postsRepository: Repository<Post>) {}
+  constructor(
+    @InjectRepository(Post) private postsRepository: Repository<Post>,
+    private usersService: UsersService
+  ) {}
 
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  async create(id: number, post: CreatePostDto) {
+    
+    await this.usersService.findOne(id)
+
+    post.userId = id
+
+    const newPost = this.postsRepository.create(post)
+
+    await this.postsRepository.save(newPost);
+
   }
 
-  findAll() {
-    return `This action returns all posts`;
+  async findAll() {
+    return await this.postsRepository.find({
+      relations: ['user']
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async findOne(id: number) {
+    
+    const postFound = await this.postsRepository.findOne({where: {id: id}, relations: ['user']})
+
+    if(!postFound) throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+
+    return postFound;
+
+  }
+  
+  async remove(id: number) {
+    
+    await this.findOne(id);
+
+    await this.postsRepository.delete({id});
+
+    throw new HttpException(`Post #${id} deleted successfully`, HttpStatus.OK);
+
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
-  }
+  async update(id: number, post: UpdatePostDto) {
+    
+    await this.findOne(id);
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+    await this.postsRepository.update({id}, post)
+
+    throw new HttpException(`Post #${id} update successfully`, HttpStatus.OK);
+
   }
 }

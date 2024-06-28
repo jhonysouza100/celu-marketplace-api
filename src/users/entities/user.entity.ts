@@ -1,5 +1,6 @@
+import { Post } from "src/posts/entities/post.entity";
 import { Profile } from "src/profile/entities/profile.entity";
-import { BeforeUpdate, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeUpdate, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('users')
 export class User {
@@ -22,6 +23,9 @@ export class User {
   @OneToOne(() => Profile)
   @JoinColumn()
   profile: Profile
+  
+  @OneToMany( () => Post, post => post.userId )
+  posts: Post[];
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
@@ -33,4 +37,5 @@ export class User {
   updateModifiedAt() {
     this.modifiedAt = new Date();
   }
+
 }

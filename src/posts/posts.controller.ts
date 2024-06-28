@@ -10,11 +10,12 @@ import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Post()
+  @Post(':id')
   @ApiBody({type: [CreatePostDto], description: 'Resibe un objeto post'})
-  create(@Body() post: CreatePostDto) {
+  @ApiParam({name: 'id', description: 'User id'})
+  create(@Param('id', ParseIntPipe) id:number, @Body() post: CreatePostDto) {
     try {
-      return this.postsService.create(post);
+      return this.postsService.create(id, post);
     } catch (error) {
       return error.message;
     }

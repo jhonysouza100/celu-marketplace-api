@@ -23,5 +23,14 @@ export class CreatePostDto {
   @Min(1)
   @Max(5)
   rating?: number;
+  
+  @ApiProperty({
+    description: 'User Id',
+    type: Number,
+    example: 1
+  })
+  @IsNumber()
+  @IsOptional()
+  userId?: number
 
 }

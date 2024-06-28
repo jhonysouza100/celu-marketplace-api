@@ -1,4 +1,5 @@
-import { BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "src/users/entities/user.entity";
+import { BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'posts'})
 export class Post {
@@ -11,6 +12,12 @@ export class Post {
 
   @Column({ default: 5})
   rating: number;
+
+  @Column()
+  userId: number;
+
+  @ManyToOne( () => User, user => user.posts )
+  user: User;
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
