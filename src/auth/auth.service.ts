@@ -2,13 +2,17 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { compare } from 'bcrypt';
 import { EmailsService } from 'src/emails/emails.service';
 import { UsersService } from 'src/users/users.service';
+import { JwtService } from '@nestjs/jwt';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthSuscribeDto } from './dto/auth-suscribe.dto';
 
 @Injectable()
 export class AuthService {
 
-  constructor(private emailService: EmailsService, private usersService: UsersService) {}
+  constructor(
+    private emailService: EmailsService,
+    private usersService: UsersService,
+    private jwtService: JwtService) {}
 
   async login(user: AuthLoginDto) {
 
@@ -19,10 +23,10 @@ export class AuthService {
 
     if(!checkPassword) throw new HttpException('Password incorrect', HttpStatus.FORBIDDEN);
 
-    // const payload = {email: userFound.email, username: userFound.username}
-    // const token = await this.jwtService.sign(payload)
+    const payload = {email: userFound.email, username: userFound.username}
+    const access_token = await this.jwtService.signAsync(payload);
 
-    // return token;
+    return {access_token};
 
   }
 
@@ -31,8 +35,7 @@ export class AuthService {
     await this.usersService.findUnique(user);
 
     const payload = {email: user.email, username: user.username}
-
-    // const token = await this.jwtService.sign(payload)
+    const access_token = await this.jwtService.signAsync(payload);
 
     await this.emailService.sendEmail(
       {
@@ -43,7 +46,7 @@ export class AuthService {
             "name": `${user.username}`
           }
         ],
-        "htmlContent": `${'token'}`,
+        "htmlContent": `${access_token}`,
         "sender": {
           "name": "Nombre del Remitente",
           "email": "jhonatansouzameza100@correo.com"
@@ -51,18 +54,7 @@ export class AuthService {
       }
     )
 
-  }
-
-  async verify(token: string) {
-
-    // const isVerified = await jwtService.verify(token);
-
-    // if(!isVerified) throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
-
-    // const user = await this.jwtService.extract(token);
-
-    // return user
+    return {access_token}
 
   }
-
 }
