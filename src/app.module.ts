@@ -7,6 +7,7 @@ import { EmailsModule } from './emails/emails.module';
 import { UsersModule } from './users/users.module';
 import { ProfileModule } from './profile/profile.module';
 import { AuthModule } from './auth/auth.module';
+import { PostsModule } from './posts/posts.module';
 import config from './config';
 
 @Module({
@@ -28,7 +29,8 @@ import config from './config';
     EmailsModule,
     UsersModule,
     ProfileModule,
-    AuthModule],
+    AuthModule,
+    PostsModule],
   controllers: [AppController],
   providers: [AppService],
 })
