@@ -23,7 +23,12 @@ export class AuthService {
 
     if(!checkPassword) throw new HttpException('Password incorrect', HttpStatus.FORBIDDEN);
 
-    const payload = {email: userFound.email, username: userFound.username}
+    const payload = {
+      email: userFound.email,
+      username: userFound.username,
+      role: 'user'
+    };
+
     const access_token = await this.jwtService.signAsync(payload);
 
     return {access_token};
@@ -32,9 +37,15 @@ export class AuthService {
 
   async suscribe(user: AuthSuscribeDto) {
 
+    // Verifica si el usuario ya existe
     await this.usersService.findUnique(user);
 
-    const payload = {email: user.email, username: user.username}
+    const payload = {
+      email: user.email,
+      username: user.username,
+      role: 'user'
+    }
+
     const access_token = await this.jwtService.signAsync(payload);
 
     await this.emailService.sendEmail(
@@ -57,4 +68,5 @@ export class AuthService {
     return {access_token}
 
   }
+  
 }

@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
-import { ApiAcceptedResponse, ApiBearerAuth, ApiBody, ApiHeader, ApiTags } from '@nestjs/swagger';
+import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
+import { ApiAcceptedResponse, ApiBearerAuth, ApiBody, ApiDefaultResponse, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { AuthSuscribeDto } from './dto/auth-suscribe.dto';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthService } from './auth.service';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from './guards/auth.guard';
+import { RolesGuard } from './guards/roles.guard';
+import { Roles } from './decorators/roles.decorator';
+import { Role } from './enums/roles.enum';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -23,6 +26,7 @@ export class AuthController {
 
   @Post('/suscribe')
   @ApiBody({ type: [AuthSuscribeDto], description: 'Recibe un objeto usuario (para registro manual)' })
+  @ApiDefaultResponse({description: '{"access_token": "123456789abcdef" }'})
   suscribe(@Body() user: AuthSuscribeDto) {
     try {
       return this.authService.suscribe(user);
@@ -32,14 +36,16 @@ export class AuthController {
   }
 
   @Post('/authorize')
-  @UseGuards(AuthGuard)
+  @Roles(Role.USER)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiHeader({
     name: 'Authorization',
     description: 'Bearer access_token',
   })
-  @ApiAcceptedResponse({description: '{"email": "johndoe@gmail.com","username": "john doe","iat": 1719542330,"exp": 1719545930}'})
-  authorize(@Request() req) {
+  @ApiAcceptedResponse({description: '{"email": "johndoe@gmail.com","username": "john doe", role: "user", "iat": 1719542330,"exp": 1719545930}'})
+  authorize(@Req() req) {
     return req.user;
   }
+
   
 }
