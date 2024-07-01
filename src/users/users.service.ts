@@ -5,12 +5,15 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { hash } from 'bcrypt';
+// import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UsersService {
 
   constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>) {} 
+    @InjectRepository(User) private usersRepository: Repository<User>,
+    // private authService: AuthService
+  ) {} 
 
   async create(user: CreateUserDto) {
     
@@ -29,7 +32,7 @@ export class UsersService {
 
     await this.usersRepository.save(newUser);
 
-    // return await this.authRepository.login({email: user.email, password: user.password})
+    // return await this.authService.login({email: user.email, password: user.password})
 
   }
 
@@ -90,7 +93,7 @@ export class UsersService {
 
   async findUserByEmail(email: string) {
 
-    const userFound = await this.usersRepository.findOne({ where: { email: email }, select: ['id','username', 'email', 'password', 'role'] });
+    const userFound = await this.usersRepository.findOne({ where: { email: email }, select: ['id','username', 'email', 'password','picture', 'profile', 'role'], relations: ['profile'] });
     
     if(!userFound) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 

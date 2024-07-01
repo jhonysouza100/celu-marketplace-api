@@ -24,7 +24,6 @@ export class AuthService {
     if(!checkPassword) throw new HttpException('Password incorrect', HttpStatus.FORBIDDEN);
 
     const payload = {
-      id: userFound.id,
       email: userFound.email,
       username: userFound.username,
       role: userFound.role
@@ -32,8 +31,13 @@ export class AuthService {
 
     const access_token = await this.jwtService.signAsync(payload);
 
-    return {access_token};
-
+    return {
+      id: userFound.id,
+      username: userFound.username,
+      email: userFound.email,
+      picture: userFound.picture,
+      profile: userFound.profile,
+      access_token};
   }
 
   async register(user: AuthRegisterDto) {
