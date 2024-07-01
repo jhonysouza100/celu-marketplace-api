@@ -5,14 +5,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { hash } from 'bcrypt';
-// import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UsersService {
 
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
-    // private authService: AuthService
+    private authService: AuthService
   ) {} 
 
   async create(user: CreateUserDto) {
@@ -32,7 +32,7 @@ export class UsersService {
 
     await this.usersRepository.save(newUser);
 
-    // return await this.authService.login({email: user.email, password: user.password})
+    return await this.authService.login({email: user.email, password: user.password})
 
   }
 

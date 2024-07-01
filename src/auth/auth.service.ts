@@ -10,9 +10,9 @@ import { AuthRegisterDto } from './dto/auth-register.dto';
 export class AuthService {
 
   constructor(
-    private emailService: EmailsService,
-    private usersService: UsersService,
-    private jwtService: JwtService) {}
+    private readonly emailService: EmailsService,
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService) {}
 
   async login(user: AuthLoginDto) {
 
