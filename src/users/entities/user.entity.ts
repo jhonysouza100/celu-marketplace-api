@@ -1,3 +1,4 @@
+import { Role } from "src/common/enums/roles.enum";
 import { Post } from "src/posts/entities/post.entity";
 import { Profile } from "src/profile/entities/profile.entity";
 import { BeforeUpdate, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
@@ -14,8 +15,11 @@ export class User {
   @Column({unique: true})
   email: string;
   
-  @Column({nullable: true})
+  @Column({nullable: true, select: false})
   password: string;
+
+  @Column({type: 'enum', default: Role.USER, enum: Role})
+  role: Role;
 
   @Column({nullable: true})
   picture: string;

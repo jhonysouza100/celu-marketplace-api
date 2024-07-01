@@ -5,7 +5,7 @@ import { Role } from '../../common/enums/roles.enum';
 
 // Este guard autoriza el usuario recibido atravez del decorador @Roles('etc'), dependiendo si el rol coinside con el rol del usuario
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class SuperRolesGuard implements CanActivate {
 
   constructor(private refelctor: Reflector) {}
 
@@ -16,15 +16,12 @@ export class RolesGuard implements CanActivate {
       context.getClass()
     ]);
 
-    // Si no se especifica el requerimiento de un rol. Autoriza la entrada
-    if(!roles) return true;
-
     // Obtiene el objeto user del middleware Authguard extraido desde el jwt access_token
     const { user } = context.switchToHttp().getRequest();
 
-    if(user.role === Role.ADMIN || user.role === Role.SUPER || user.role === Role.ROOT) return true; // Si el usuario es un user en adelante, tiene acceso permitido
+    if(user.role === Role.ROOT) return true; // Si el usuario es un super admin en adelante, tiene acceso permitido
 
-    return roles === user.role;
+    return roles === user.SUPER;
 
   }
 }

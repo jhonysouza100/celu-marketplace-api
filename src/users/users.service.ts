@@ -27,7 +27,9 @@ export class UsersService {
 
     const newUser = this.usersRepository.create(user);
 
-    return await this.usersRepository.save(newUser);
+    await this.usersRepository.save(newUser);
+
+    // return await this.authRepository.login({email: user.email, password: user.password})
 
   }
 
@@ -88,7 +90,7 @@ export class UsersService {
 
   async findUserByEmail(email: string) {
 
-    const userFound = await this.usersRepository.findOne({ where: { email: email } });
+    const userFound = await this.usersRepository.findOne({ where: { email: email }, select: ['id','username', 'email', 'password', 'role'] });
     
     if(!userFound) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 

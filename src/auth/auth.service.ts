@@ -4,7 +4,7 @@ import { EmailsService } from 'src/emails/emails.service';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthLoginDto } from './dto/auth-login.dto';
-import { AuthSuscribeDto } from './dto/auth-suscribe.dto';
+import { AuthRegisterDto } from './dto/auth-register.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,9 +24,10 @@ export class AuthService {
     if(!checkPassword) throw new HttpException('Password incorrect', HttpStatus.FORBIDDEN);
 
     const payload = {
+      id: userFound.id,
       email: userFound.email,
       username: userFound.username,
-      role: 'user'
+      role: userFound.role
     };
 
     const access_token = await this.jwtService.signAsync(payload);
@@ -35,15 +36,14 @@ export class AuthService {
 
   }
 
-  async suscribe(user: AuthSuscribeDto) {
+  async register(user: AuthRegisterDto) {
 
     // Verifica si el usuario ya existe
     await this.usersService.findUnique(user);
 
     const payload = {
       email: user.email,
-      username: user.username,
-      role: 'user'
+      username: user.username
     }
 
     const access_token = await this.jwtService.signAsync(payload);
